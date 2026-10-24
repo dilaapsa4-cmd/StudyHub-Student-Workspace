@@ -1,463 +1,2650 @@
-
-
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StudyHub | Student Workspace</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b1020">
+    <meta name="description" content="StudyHub - Your personal study dashboard. Organize tasks, notes, schedules, and focus sessions in one place.">
+    <title>StudyHub — Your Space to Grow</title>
 
-<style>
-:root {
-  --bg:#0b1020; --panel:#121a2e; --panel2:#1b2740;
-  --border:#293650; --text:#edf2ff; --muted:#94a3bd;
-  --blue:#80aaff; --purple:#b6a0ff; --green:#70e0b0;
-}
-* { box-sizing:border-box; }
-body {
-  margin:0; background:var(--bg); color:var(--text);
-  font:14px/1.6 Arial,sans-serif;
-}
-button,input,select,textarea { font:inherit; }
-button { cursor:pointer; }
-.app { display:grid; grid-template-columns:220px 1fr; min-height:100vh; }
-aside { padding:25px 15px; background:#0e1527; border-right:1px solid var(--border); }
-.brand { font-size:23px; font-weight:800; margin:5px 8px 35px; }
-.brand span { color:var(--blue); }
-.nav-label { color:var(--muted); font-size:11px; margin:24px 10px 8px; }
-.nav {
-  width:100%; display:block; text-align:left; padding:11px;
-  margin:4px 0; color:var(--muted); background:transparent;
-  border:1px solid transparent; border-radius:9px;
-}
-.nav:hover,.nav.active { color:var(--blue); background:var(--panel2); border-color:var(--border); }
-.tip { margin-top:35px; padding:13px; background:var(--panel); border:1px solid var(--border); border-radius:12px; color:var(--muted); }
-main { min-width:0; padding:30px clamp(15px,4vw,42px); }
-.top { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:25px; }
-h1 { font-size:30px; line-height:1.2; margin:7px 0; }
-h2 { font-size:18px; margin:0 0 12px; }
-h3 { margin:0; font-size:14px; }
-p { margin:8px 0; }
-.muted { color:var(--muted); }
-.eyebrow { color:var(--blue); font-size:11px; letter-spacing:1.5px; font-weight:bold; }
-.hero {
-  padding:26px; border:1px solid #344a70; border-radius:17px;
-  background:radial-gradient(ellipse at 90% 0%,#344a80,transparent 48%),#192642;
-  margin-bottom:20px;
-}
-.hero h2 { font-size:25px; }
-.hero p { color:#c5d0e5; }
-.stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:20px 0; }
-.card,.stat { padding:17px; background:var(--panel); border:1px solid var(--border); border-radius:13px; min-width:0; }
-.stat-label { color:var(--muted); font-size:12px; }
-.stat-number { font-size:27px; font-weight:bold; margin-top:7px; }
-.layout { display:grid; grid-template-columns:minmax(0,1.4fr) minmax(250px,1fr); gap:17px; }
-.section-head { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:13px; }
-.btn {
-  border:0; border-radius:8px; padding:10px 14px;
-  background:var(--blue); color:#10182b; font-weight:bold;
-}
-.btn.secondary { background:var(--panel2); color:var(--text); border:1px solid var(--border); }
-.btn.danger { background:#492334; color:#ffb8c5; }
-input,select,textarea {
-  width:100%; padding:11px; color:var(--text); background:#0d1528;
-  border:1px solid var(--border); border-radius:8px; outline:none;
-}
-input:focus,select:focus,textarea:focus { border-color:var(--blue); }
-.form { display:grid; gap:10px; margin-bottom:17px; }
-.form-row { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
-.task {
-  display:flex; gap:10px; align-items:flex-start; padding:13px 0;
-  border-bottom:1px solid var(--border);
-}
-.task:last-child { border-bottom:0; }
-.task input[type=checkbox] { width:17px; margin-top:4px; accent-color:#80aaff; }
-.task-content { flex:1; min-width:0; overflow-wrap:anywhere; }
-.task.done .task-title { text-decoration:line-through; color:var(--muted); }
-.tag { display:inline-block; font-size:11px; padding:2px 7px; border-radius:5px; background:#263858; color:var(--blue); margin:5px 4px 0 0; }
-.tag.high { color:#ffb1bf; background:#472435; }
-.tag.low { color:var(--green); background:#173c36; }
-.icon-btn { border:0; background:transparent; color:var(--muted); padding:3px 6px; }
-.progress { height:8px; border-radius:10px; overflow:hidden; background:#28334a; margin:12px 0; }
-.progress div { height:100%; background:linear-gradient(90deg,var(--blue),var(--purple)); width:0; transition:width .3s; }
-.schedule-item { padding:11px 0; border-bottom:1px solid var(--border); }
-.schedule-item:last-child { border-bottom:0; }
-.time { color:var(--blue); font-size:12px; font-weight:bold; }
-.view { display:none; }
-.view.active { display:block; }
-.notes-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
-.note { padding:15px; background:var(--panel2); border-radius:10px; white-space:pre-wrap; overflow-wrap:anywhere; }
-.note small { display:block; color:var(--muted); margin-top:8px; }
-.timer { font-size:55px; font-weight:bold; text-align:center; margin:25px 0; font-variant-numeric:tabular-nums; }
-.timer-actions { display:flex; justify-content:center; gap:9px; flex-wrap:wrap; }
-.empty { text-align:center; color:var(--muted); padding:22px 5px; }
-footer { text-align:center; color:var(--muted); font-size:11px; padding:30px 0 5px; }
-@media(max-width:900px) {
-  .stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .layout { grid-template-columns:1fr; }
-}
-@media(max-width:600px) {
-  .app { display:block; }
-  aside { padding:12px; border-right:0; border-bottom:1px solid var(--border); }
-  .brand { margin:0 0 10px; font-size:20px; }
-  .nav-label,.tip { display:none; }
-  .navs { display:flex; gap:5px; overflow-x:auto; }
-  .nav { width:auto; flex-shrink:0; padding:8px 10px; font-size:12px; }
-  main { padding:20px 14px; }
-  h1 { font-size:25px; }
-  .hero { padding:19px; }
-  .hero h2 { font-size:21px; }
-  .stats { gap:8px; }
-  .stat,.card { padding:13px; }
-  .stat-number { font-size:23px; }
-  .top { align-items:flex-start; }
-  .date-chip { font-size:11px; padding:8px; }
-  .notes-grid { grid-template-columns:1fr; }
-}
-</style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        :root {
+            --bg: #0b1020;
+            --panel: #121a2d;
+            --panel-hover: #182239;
+            --border: #24304a;
+            --text: #eef2ff;
+            --muted: #8491ad;
+            --accent: #8b9cff;
+            --accent-light: #b3bcff;
+            --green: #7ee7b5;
+            --orange: #ffca85;
+            --red: #ff8e9b;
+            --radius: 18px;
+            --sidebar-width: 245px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "DM Sans", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        button, input, textarea, select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        button:focus-visible, input:focus-visible,
+        textarea:focus-visible, select:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: var(--sidebar-width);
+            position: fixed;
+            inset: 0 auto 0 0;
+            background: #0e1527;
+            border-right: 1px solid var(--border);
+            padding: 28px 18px;
+            display: flex;
+            flex-direction: column;
+            z-index: 20;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px;
+            margin-bottom: 45px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #aab6ff, #727fe7);
+            color: #10152c;
+            font-size: 19px;
+        }
+
+        .brand-name {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 21px;
+            font-weight: 700;
+            letter-spacing: -0.8px;
+        }
+
+        .brand-name span {
+            color: var(--accent);
+        }
+
+        .nav-label {
+            padding: 0 12px;
+            margin-bottom: 13px;
+            color: #66738f;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .nav-menu {
+            display: grid;
+            gap: 7px;
+        }
+
+        .nav-btn {
+            width: 100%;
+            padding: 13px 14px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            background: transparent;
+            color: var(--muted);
+            text-align: left;
+            transition: 0.2s ease;
+        }
+
+        .nav-btn i {
+            width: 19px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .nav-btn:hover {
+            color: var(--text);
+            background: var(--panel);
+        }
+
+        .nav-btn.active {
+            color: var(--accent-light);
+            background: #202846;
+            border-color: #303b61;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .quote-card {
+            padding: 18px;
+            border-radius: 15px;
+            background: linear-gradient(145deg, #1c2645, #141b30);
+            border: 1px solid #2b3655;
+        }
+
+        .quote-card i {
+            color: var(--accent);
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .quote-card p {
+            font-size: 12px;
+            line-height: 1.8;
+            color: #c5cde3;
+        }
+
+        .quote-card small {
+            display: block;
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .sidebar-footer {
+            padding: 20px 10px 0;
+            font-size: 11px;
+            color: #65718a;
+        }
+
+        /* MAIN */
+
+        .main {
+            width: calc(100% - var(--sidebar-width));
+            margin-left: var(--sidebar-width);
+            padding: 30px 38px 50px;
+            min-width: 0;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 38px;
+        }
+
+        .eyebrow {
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        h1, h2, h3 {
+            font-family: "Space Grotesk", sans-serif;
+        }
+
+        .topbar h1 {
+            font-size: clamp(25px, 3vw, 35px);
+            letter-spacing: -1.4px;
+        }
+
+        .topbar p {
+            color: var(--muted);
+            margin-top: 7px;
+            font-size: 13px;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .date-chip {
+            padding: 11px 15px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: #b6c0da;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: #303a60;
+            border: 1px solid #495580;
+            color: #e0e5ff;
+            font-weight: 700;
+        }
+
+        .mobile-brand {
+            display: none;
+        }
+
+        /* COMMON */
+
+        .page {
+            display: none;
+            animation: appear 0.25s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes appear {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .section-heading h2 {
+            font-size: 19px;
+            letter-spacing: -0.5px;
+        }
+
+        .section-heading p {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            border-radius: 11px;
+            padding: 11px 15px;
+            font-size: 12px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #11172d;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #1a243b;
+            border-color: var(--border);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: #25314b;
+        }
+
+        .btn-danger {
+            background: #38202d;
+            color: #ffabb4;
+            border-color: #57303d;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 23px;
+            min-width: 0;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--muted);
+            padding: 30px 15px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .empty-state i {
+            display: block;
+            font-size: 27px;
+            color: #65749a;
+            margin-bottom: 13px;
+        }
+
+        /* DASHBOARD */
+
+        .welcome-banner {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 30px;
+            margin-bottom: 24px;
+            border: 1px solid #333e65;
+            border-radius: 21px;
+            background: linear-gradient(110deg, #1d294c 0%, #222949 58%, #343763 100%);
+        }
+
+        .welcome-banner::after {
+            content: "";
+            position: absolute;
+            width: 190px;
+            height: 190px;
+            border: 1px solid #737dcf33;
+            border-radius: 50%;
+            right: 65px;
+            top: -100px;
+            box-shadow: 0 0 0 25px #737dcf0b,
+                        0 0 0 50px #737dcf0b;
+            pointer-events: none;
+        }
+
+        .welcome-banner h2 {
+            font-size: clamp(21px, 2.4vw, 29px);
+            letter-spacing: -1px;
+            margin-bottom: 9px;
+        }
+
+        .welcome-banner p {
+            max-width: 430px;
+            color: #c2cbe8;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .welcome-symbol {
+            position: relative;
+            z-index: 1;
+            min-width: 90px;
+            text-align: center;
+            font-size: 48px;
+            color: #d6dcff;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            padding: 20px;
+            border-radius: 16px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+        }
+
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .stat-icon {
+            display: grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: #252f4c;
+            color: var(--accent);
+        }
+
+        .stat-card:nth-child(2) .stat-icon {
+            background: #193a37;
+            color: var(--green);
+        }
+
+        .stat-card:nth-child(3) .stat-icon {
+            background: #3a3025;
+            color: var(--orange);
+        }
+
+        .stat-card:nth-child(4) .stat-icon {
+            background: #352844;
+            color: #d3a9ff;
+        }
+
+        .stat-number {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 29px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .stat-label {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+            gap: 20px;
+        }
+
+        .task-preview {
+            display: grid;
+            gap: 12px;
+        }
+
+        .task-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px;
+            border: 1px solid #26314a;
+            border-radius: 12px;
+            background: #151e32;
+        }
+
+        .check-btn {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            border: 1px solid #647294;
+            border-radius: 7px;
+            background: transparent;
+            color: #10172b;
+            display: grid;
+            place-items: center;
+            font-size: 10px;
+            margin-top: 2px;
+        }
+
+        .check-btn.checked {
+            background: var(--green);
+            border-color: var(--green);
+        }
+
+        .task-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-content strong {
+            display: block;
+            font-size: 12px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .task-content small {
+            display: block;
+            color: var(--muted);
+            margin-top: 5px;
+            font-size: 10px;
+        }
+
+        .task-row.done .task-content strong {
+            color: #7885a0;
+            text-decoration: line-through;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 5px 8px;
+            border-radius: 7px;
+            font-size: 9px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .priority.high {
+            color: #ffabb4;
+            background: #3c2632;
+        }
+
+        .priority.medium {
+            color: #ffd29a;
+            background: #3a3025;
+        }
+
+        .priority.low {
+            color: #8de8bd;
+            background: #1e3935;
+        }
+
+        .progress-track {
+            height: 7px;
+            overflow: hidden;
+            border-radius: 20px;
+            background: #28324a;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #7b8cff, #b5bdff);
+            transition: width 0.3s;
+        }
+
+        .progress-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 15px 0 10px;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .focus-summary {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .focus-summary:last-child {
+            border-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .focus-summary i {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border-radius: 11px;
+            background: #252f4c;
+            color: var(--accent);
+        }
+
+        .focus-summary strong {
+            display: block;
+            font-size: 12px;
+        }
+
+        .focus-summary small {
+            display: block;
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        /* FORMS */
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .field {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .field label {
+            font-size: 12px;
+            color: #c5cee4;
+        }
+
+        .field input, .field textarea, .field select {
+            width: 100%;
+            padding: 13px 14px;
+            color: var(--text);
+            background: #0e1628;
+            border: 1px solid #2a3650;
+            border-radius: 11px;
+            outline: none;
+        }
+
+        .field input:focus, .field textarea:focus,
+        .field select:focus {
+            border-color: var(--accent);
+        }
+
+        .field textarea {
+            resize: vertical;
+            min-height: 120px;
+            line-height: 1.7;
+        }
+
+        .field select option {
+            background: var(--panel);
+        }
+
+        .form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* TASKS */
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 180px;
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 13px 12px 38px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            color: var(--text);
+            background: var(--panel);
+        }
+
+        .toolbar select {
+            padding: 12px;
+            color: var(--text);
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 11px;
+        }
+
+        .task-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .full-task {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 19px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+        }
+
+        .full-task .task-content strong {
+            font-size: 14px;
+        }
+
+        .full-task .task-content small {
+            font-size: 11px;
+        }
+
+        .task-description {
+            margin-top: 9px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .task-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 6px;
+            margin-left: auto;
+        }
+
+        .icon-btn {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            background: #1c2740;
+            border: 1px solid #2b3853;
+            border-radius: 9px;
+            color: #b8c3e0;
+        }
+
+        .icon-btn:hover {
+            color: white;
+            background: #2a3756;
+        }
+
+        .icon-btn.delete:hover {
+            color: var(--red);
+        }
+
+        /* SCHEDULE */
+
+        .schedule-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .schedule-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 18px;
+            border: 1px solid var(--border);
+            background: var(--panel);
+            border-radius: 14px;
+        }
+
+        .schedule-time {
+            min-width: 78px;
+            color: var(--accent-light);
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .schedule-line {
+            width: 3px;
+            align-self: stretch;
+            min-height: 45px;
+            border-radius: 5px;
+            background: var(--accent);
+        }
+
+        .schedule-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .schedule-info strong {
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .schedule-info p {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 6px;
+        }
+
+        /* NOTES */
+
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .note-card {
+            padding: 20px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            min-height: 170px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .note-card h3 {
+            font-size: 15px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .note-card p {
+            margin-top: 10px;
+            font-size: 12px;
+            line-height: 1.8;
+            color: var(--muted);
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            flex: 1;
+        }
+
+        .note-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        /* POMODORO */
+
+        .pomodoro-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+            gap: 20px;
+        }
+
+        .timer-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 36px 20px;
+        }
+
+        .timer-modes {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+
+        .mode-btn {
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: transparent;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .mode-btn.active {
+            background: #283252;
+            border-color: #495787;
+            color: var(--accent-light);
+        }
+
+        .timer-ring {
+            width: min(260px, 72vw);
+            aspect-ratio: 1;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            border: 8px solid #252f4a;
+            outline: 2px solid #4a5782;
+            outline-offset: 5px;
+            margin: 10px 0 35px;
+            background: radial-gradient(circle, #1b2541, #111a2e 70%);
+        }
+
+        .timer-display {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(42px, 6vw, 57px);
+            font-weight: 700;
+            letter-spacing: -3px;
+        }
+
+        .timer-status {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .timer-controls .btn {
+            min-width: 105px;
+        }
+
+        .timer-info h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .timer-info > p {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.9;
+            margin-bottom: 20px;
+        }
+
+        .tip {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 15px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .tip i {
+            margin-top: 3px;
+            color: var(--accent);
+        }
+
+        .tip p {
+            color: #c3cce2;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        /* MODAL */
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            place-items: center;
+            padding: 20px;
+            background: #060a13cc;
+            backdrop-filter: blur(7px);
+            z-index: 50;
+        }
+
+        .modal.show {
+            display: grid;
+        }
+
+        .modal-card {
+            width: min(560px, 100%);
+            max-height: 90vh;
+            overflow-y: auto;
+            background: #141d31;
+            border: 1px solid #35415e;
+            border-radius: 20px;
+            padding: 25px;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 23px;
+        }
+
+        .modal-header h2 {
+            font-size: 21px;
+        }
+
+        .modal-close {
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            font-size: 23px;
+        }
+
+        /* TOAST */
+
+        .toast {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            max-width: min(360px, calc(100% - 32px));
+            padding: 14px 18px;
+            border-radius: 12px;
+            background: #263552;
+            border: 1px solid #485a82;
+            color: white;
+            font-size: 12px;
+            line-height: 1.6;
+            box-shadow: 0 15px 45px #0005;
+            z-index: 100;
+            opacity: 0;
+            transform: translateY(12px);
+            pointer-events: none;
+            transition: 0.25s;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* FOOTER */
+
+        .main-footer {
+            padding-top: 35px;
+            margin-top: 35px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            color: #65718a;
+            font-size: 11px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1100px) {
+            .main {
+                padding: 27px 25px 40px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .notes-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 760px) {
+            :root {
+                --sidebar-width: 0px;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                inset: auto 0 0 0;
+                padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+                border-top: 1px solid var(--border);
+                border-right: 0;
+                background: #0e1527f5;
+                backdrop-filter: blur(15px);
+            }
+
+            .brand, .nav-label, .quote-card, .sidebar-footer {
+                display: none;
+            }
+
+            .sidebar-bottom {
+                display: none;
+            }
+
+            .nav-menu {
+                display: grid;
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+                gap: 3px;
+            }
+
+            .nav-btn {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: 5px;
+                padding: 9px 2px;
+                font-size: 9px;
+                text-align: center;
+            }
+
+            .nav-btn i {
+                font-size: 17px;
+            }
+
+            .main {
+                width: 100%;
+                margin-left: 0;
+                padding: 18px 16px 110px;
+            }
+
+            .topbar {
+                margin-bottom: 25px;
+                align-items: flex-start;
+            }
+
+            .topbar h1 {
+                font-size: 25px;
+            }
+
+            .topbar p {
+                font-size: 11px;
+            }
+
+            .date-chip {
+                display: none;
+            }
+
+            .avatar {
+                width: 38px;
+                height: 38px;
+            }
+
+            .welcome-banner {
+                padding: 22px 19px;
+            }
+
+            .welcome-banner p {
+                font-size: 12px;
+            }
+
+            .welcome-symbol {
+                min-width: 45px;
+                font-size: 33px;
+            }
+
+            .stats-grid {
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-number {
+                font-size: 25px;
+            }
+
+            .stat-label {
+                font-size: 10px;
+            }
+
+            .dashboard-grid, .pomodoro-layout {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .notes-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .form-row {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 0;
+            }
+
+            .section-heading h2 {
+                font-size: 17px;
+            }
+
+            .section-heading .btn {
+                padding: 10px;
+                font-size: 10px;
+            }
+
+            .full-task {
+                padding: 14px;
+                gap: 10px;
+            }
+
+            .full-task .task-content strong {
+                font-size: 12px;
+            }
+
+            .task-actions {
+                gap: 4px;
+            }
+
+            .icon-btn {
+                width: 30px;
+                height: 30px;
+            }
+
+            .schedule-item {
+                gap: 10px;
+                padding: 14px;
+            }
+
+            .schedule-time {
+                min-width: 63px;
+                font-size: 12px;
+            }
+
+            .main-footer {
+                flex-direction: column;
+                line-height: 1.7;
+            }
+
+            .toast {
+                right: 16px;
+                bottom: 95px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
 <div class="app">
-<aside>
-  <div class="brand">✦ Study<span>Hub</span></div>
-  <div class="nav-label">WORKSPACE</div>
-  <div class="navs">
-    <button class="nav active" data-view="dashboard">⌂ Dashboard</button>
-    <button class="nav" data-view="tasks">☑ My Tasks</button>
-    <button class="nav" data-view="schedule">▦ Schedule</button>
-    <button class="nav" data-view="notes">▤ Quick Notes</button>
-    <button class="nav" data-view="timer">◷ Focus Timer</button>
-  </div>
-  <div class="tip">
-    ✦ <strong>Study reminder</strong>
-    <p>Small progress is still progress. Keep showing up for yourself.</p>
-  </div>
-</aside>
 
-<main>
-<header class="top">
-  <div>
-    <div class="eyebrow">YOUR PERSONAL WORKSPACE</div>
-    <h1 id="greeting">Welcome back! 👋</h1>
-    <div class="muted">Let's make today count.</div>
-  </div>
-  <div class="date-chip" id="today"></div>
-</header>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon"><i class="fa-solid fa-book-open"></i></div>
+            <div class="brand-name">Study<span>Hub.</span></div>
+        </div>
 
-<section class="view active" id="dashboard">
-  <div class="hero">
-    <div class="eyebrow">YOUR SPACE TO GROW</div>
-    <h2>Plan less chaotically.<br>Study more intentionally.</h2>
-    <p>One space for your assignments, classes, notes, and focus sessions.</p>
-    <button class="btn" onclick="showView('tasks')">+ Add a task</button>
-  </div>
+        <div class="nav-label">Workspace</div>
 
-  <div class="stats">
-    <div class="stat"><div class="stat-label">Total Tasks</div><div class="stat-number" id="total">0</div></div>
-    <div class="stat"><div class="stat-label">Completed</div><div class="stat-number" id="completed">0</div></div>
-    <div class="stat"><div class="stat-label">Remaining</div><div class="stat-number" id="remaining">0</div></div>
-    <div class="stat"><div class="stat-label">Completion</div><div class="stat-number" id="percent">0%</div></div>
-  </div>
+        <nav class="nav-menu" aria-label="Navigasi utama">
+            <button class="nav-btn active" data-page="dashboard">
+                <i class="fa-solid fa-house"></i><span>Dashboard</span>
+            </button>
+            <button class="nav-btn" data-page="tasks">
+                <i class="fa-solid fa-list-check"></i><span>My Tasks</span>
+            </button>
+            <button class="nav-btn" data-page="schedule">
+                <i class="fa-regular fa-calendar"></i><span>Schedule</span>
+            </button>
+            <button class="nav-btn" data-page="notes">
+                <i class="fa-regular fa-note-sticky"></i><span>My Notes</span>
+            </button>
+            <button class="nav-btn" data-page="pomodoro">
+                <i class="fa-solid fa-hourglass-half"></i><span>Focus Room</span>
+            </button>
+        </nav>
 
-  <div class="layout">
-    <div class="card">
-      <div class="section-head"><h2>Upcoming Tasks</h2><button class="btn secondary" onclick="showView('tasks')">View all ↗</button></div>
-      <div class="progress"><div id="progressbar"></div></div>
-      <div class="muted small" id="progresslabel">Your progress starts here.</div>
-      <div id="dashTasks"></div>
-    </div>
-    <div class="card">
-      <div class="section-head"><h2>Today's Classes</h2><button class="btn secondary" onclick="showView('schedule')">Edit ↗</button></div>
-      <div id="dashSchedule"></div>
-    </div>
-  </div>
-</section>
+        <div class="sidebar-bottom">
+            <div class="quote-card">
+                <i class="fa-solid fa-quote-left"></i>
+                <p id="quoteText">Small steps every day lead to big changes.</p>
+                <small>YOUR DAILY REMINDER</small>
+            </div>
+            <div class="sidebar-footer">Made for your growth. ✦</div>
+        </div>
+    </aside>
 
-<section class="view" id="tasks">
-  <div class="section-head"><div><div class="eyebrow">STAY ON TRACK</div><h1>My Tasks</h1></div></div>
-  <div class="card">
-    <h2>Add a new task</h2>
-    <form class="form" id="taskForm">
-      <input id="taskTitle" placeholder="What do you need to do?" required maxlength="120">
-      <div class="form-row">
-        <input id="taskSubject" placeholder="Subject / course">
-        <input id="taskDeadline" type="date">
-      </div>
-      <div class="form-row">
-        <select id="taskPriority">
-          <option value="Normal">Normal priority</option>
-          <option value="High">High priority</option>
-          <option value="Low">Low priority</option>
-        </select>
-        <button class="btn" type="submit">+ Add task</button>
-      </div>
-    </form>
-  </div>
-  <div class="card" style="margin-top:15px">
-    <div class="section-head"><h2>Your assignments</h2>
-      <select id="taskFilter" style="width:auto">
-        <option value="all">All tasks</option>
-        <option value="active">Remaining</option>
-        <option value="done">Completed</option>
-      </select>
-    </div>
-    <div id="allTasks"></div>
-  </div>
-</section>
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <header class="topbar">
+            <div>
+                <div class="eyebrow" id="pageEyebrow">YOUR PERSONAL WORKSPACE</div>
+                <h1 id="pageTitle">Good day, Student. ✦</h1>
+                <p id="pageSubtitle">A little progress each day adds up to big results.</p>
+            </div>
+            <div class="topbar-actions">
+                <div class="date-chip" id="todayDate"></div>
+                <div class="avatar" aria-label="Student profile">S</div>
+            </div>
+        </header>
 
-<section class="view" id="schedule">
-  <div class="eyebrow">ORGANIZE YOUR WEEK</div><h1>Class Schedule</h1>
-  <div class="card">
-    <h2>Add a class</h2>
-    <form class="form" id="classForm">
-      <input id="className" placeholder="Course name" required maxlength="100">
-      <div class="form-row">
-        <select id="classDay">
-          <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
-          <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
-        </select>
-        <input id="classTime" type="time" required>
-      </div>
-      <div class="form-row">
-        <input id="classRoom" placeholder="Room / online">
-        <button class="btn" type="submit">+ Add class</button>
-      </div>
-    </form>
-  </div>
-  <div class="card" style="margin-top:15px">
-    <h2>Your weekly classes</h2>
-    <div id="allSchedule"></div>
-  </div>
-</section>
+        <!-- DASHBOARD PAGE -->
+        <section class="page active" id="page-dashboard">
+            <div class="welcome-banner">
+                <div>
+                    <div class="eyebrow">YOUR SPACE TO GROW</div>
+                    <h2>Make today count. ✨</h2>
+                    <p>Organize your workload, protect your focus, and make room for the things that matter.</p>
+                </div>
+                <div class="welcome-symbol"><i class="fa-solid fa-moon"></i></div>
+            </div>
 
-<section class="view" id="notes">
-  <div class="eyebrow">SAVE YOUR IDEAS</div><h1>Quick Notes</h1>
-  <div class="card">
-    <form class="form" id="noteForm">
-      <input id="noteTitle" placeholder="Note title" maxlength="100" required>
-      <textarea id="noteBody" rows="5" placeholder="Write your study notes here..." required maxlength="5000"></textarea>
-      <button class="btn" type="submit">Save note</button>
-    </form>
-  </div>
-  <div class="notes-grid" id="allNotes" style="margin-top:15px"></div>
-</section>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-icon"><i class="fa-solid fa-list-check"></i></div>
+                        <i class="fa-solid fa-arrow-up-right-from-square muted"></i>
+                    </div>
+                    <div class="stat-number" id="statTotal">0</div>
+                    <div class="stat-label">Total tasks</div>
+                </div>
 
-<section class="view" id="timer">
-  <div class="eyebrow">DEEP WORK, ONE SESSION AT A TIME</div><h1>Focus Timer</h1>
-  <div class="card" style="max-width:500px;margin:20px auto">
-    <p class="muted" style="text-align:center">A little focus goes a long way.</p>
-    <div class="timer" id="timerDisplay">25:00</div>
-    <div class="timer-actions">
-      <button class="btn" id="startTimer">Start focus</button>
-      <button class="btn secondary" id="pauseTimer">Pause</button>
-      <button class="btn secondary" id="resetTimer">Reset</button>
-    </div>
-    <div class="timer-actions" style="margin-top:18px">
-      <button class="btn secondary mode" data-minutes="25">Focus · 25m</button>
-      <button class="btn secondary mode" data-minutes="5">Short break · 5m</button>
-      <button class="btn secondary mode" data-minutes="15">Long break · 15m</button>
-    </div>
-    <p class="muted small" id="timerStatus" style="text-align:center">Ready when you are.</p>
-  </div>
-</section>
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+                        <i class="fa-solid fa-check muted"></i>
+                    </div>
+                    <div class="stat-number" id="statCompleted">0</div>
+                    <div class="stat-label">Tasks completed</div>
+                </div>
 
-<footer>Made for your next chapter ✦ StudyHub</footer>
-</main>
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-icon"><i class="fa-regular fa-clock"></i></div>
+                        <i class="fa-solid fa-calendar-day muted"></i>
+                    </div>
+                    <div class="stat-number" id="statPending">0</div>
+                    <div class="stat-label">Tasks pending</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-icon"><i class="fa-solid fa-bullseye"></i></div>
+                        <i class="fa-solid fa-chart-simple muted"></i>
+                    </div>
+                    <div class="stat-number" id="statProgress">0%</div>
+                    <div class="stat-label">Overall progress</div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div>
+                    <div class="section-heading">
+                        <div>
+                            <h2>Upcoming tasks</h2>
+                            <p>Your next steps, all in one place.</p>
+                        </div>
+                        <button class="btn btn-secondary" onclick="navigate('tasks')">View all <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+
+                    <div class="card">
+                        <div class="task-preview" id="dashboardTasks"></div>
+                    </div>
+
+                    <div class="card" style="margin-top:20px">
+                        <div class="section-heading">
+                            <div>
+                                <h2>Study progress</h2>
+                                <p>Every completed task counts.</p>
+                            </div>
+                            <i class="fa-solid fa-chart-line" style="color:var(--accent)"></i>
+                        </div>
+
+                        <div class="progress-meta">
+                            <span>Completion rate</span>
+                            <strong id="progressLabel">0%</strong>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progressBar"></div>
+                        </div>
+                        <p class="muted" style="font-size:11px;margin-top:13px" id="progressMessage">Start with one small task today.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="section-heading">
+                        <div>
+                            <h2>Quick overview</h2>
+                            <p>A little structure goes a long way.</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="focus-summary">
+                            <i class="fa-solid fa-book-open"></i>
+                            <div>
+                                <strong id="overviewNotes">0 saved notes</strong>
+                                <small>Ideas worth keeping</small>
+                            </div>
+                        </div>
+                        <div class="focus-summary">
+                            <i class="fa-regular fa-calendar-check"></i>
+                            <div>
+                                <strong id="overviewSchedule">0 study sessions</strong>
+                                <small>Your personal timetable</small>
+                            </div>
+                        </div>
+                        <div class="focus-summary">
+                            <i class="fa-solid fa-hourglass-half"></i>
+                            <div>
+                                <strong id="overviewFocus">0 minutes focused</strong>
+                                <small>Focus sessions completed</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-heading" style="margin-top:28px">
+                        <div>
+                            <h2>Quick actions</h2>
+                            <p>Get started without the clutter.</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <button class="btn btn-secondary" style="width:100%;justify-content:flex-start;margin-bottom:10px" onclick="openTaskModal()">
+                            <i class="fa-solid fa-plus"></i> Add a new task
+                        </button>
+                        <button class="btn btn-secondary" style="width:100%;justify-content:flex-start;margin-bottom:10px" onclick="openNoteModal()">
+                            <i class="fa-regular fa-pen-to-square"></i> Write a note
+                        </button>
+                        <button class="btn btn-secondary" style="width:100%;justify-content:flex-start" onclick="navigate('pomodoro')">
+                            <i class="fa-solid fa-play"></i> Start a focus session
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TASKS PAGE -->
+        <section class="page" id="page-tasks">
+            <div class="section-heading">
+                <div>
+                    <h2>My Tasks</h2>
+                    <p>Break big goals into manageable steps.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openTaskModal()">
+                    <i class="fa-solid fa-plus"></i> Add task
+                </button>
+            </div>
+
+            <div class="toolbar">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="search" id="taskSearch" placeholder="Search your tasks..." aria-label="Search tasks">
+                </div>
+                <select id="taskFilter" aria-label="Filter tasks">
+                    <option value="all">All tasks</option>
+                    <option value="pending">Pending</option>
+                    <option value="completed">Completed</option>
+                    <option value="high">High priority</option>
+                </select>
+                <select id="taskSort" aria-label="Sort tasks">
+                    <option value="deadline">Sort by deadline</option>
+                    <option value="priority">Sort by priority</option>
+                    <option value="newest">Newest first</option>
+                </select>
+            </div>
+
+            <div class="task-list" id="allTasks"></div>
+        </section>
+
+        <!-- SCHEDULE PAGE -->
+        <section class="page" id="page-schedule">
+            <div class="section-heading">
+                <div>
+                    <h2>Study Schedule</h2>
+                    <p>Plan your time. Leave room to breathe.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openScheduleModal()">
+                    <i class="fa-solid fa-plus"></i> Add session
+                </button>
+            </div>
+
+            <div class="toolbar">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="search" id="scheduleSearch" placeholder="Search schedule..." aria-label="Search schedule">
+                </div>
+                <select id="scheduleDayFilter" aria-label="Filter by day">
+                    <option value="all">All days</option>
+                    <option value="Senin">Monday</option>
+                    <option value="Selasa">Tuesday</option>
+                    <option value="Rabu">Wednesday</option>
+                    <option value="Kamis">Thursday</option>
+                    <option value="Jumat">Friday</option>
+                    <option value="Sabtu">Saturday</option>
+                    <option value="Minggu">Sunday</option>
+                </select>
+            </div>
+
+            <div class="schedule-list" id="scheduleList"></div>
+        </section>
+
+        <!-- NOTES PAGE -->
+        <section class="page" id="page-notes">
+            <div class="section-heading">
+                <div>
+                    <h2>My Notes</h2>
+                    <p>Capture ideas before they disappear.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openNoteModal()">
+                    <i class="fa-solid fa-plus"></i> New note
+                </button>
+            </div>
+
+            <div class="toolbar">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="search" id="noteSearch" placeholder="Search your notes..." aria-label="Search notes">
+                </div>
+            </div>
+
+            <div class="notes-grid" id="notesGrid"></div>
+        </section>
+
+        <!-- POMODORO PAGE -->
+        <section class="page" id="page-pomodoro">
+            <div class="section-heading">
+                <div>
+                    <h2>Focus Room</h2>
+                    <p>One thing at a time. You've got this.</p>
+                </div>
+            </div>
+
+            <div class="pomodoro-layout">
+                <div class="card timer-card">
+                    <div class="timer-modes">
+                        <button class="mode-btn active" data-mode="focus">Focus</button>
+                        <button class="mode-btn" data-mode="short">Short break</button>
+                        <button class="mode-btn" data-mode="long">Long break</button>
+                    </div>
+
+                    <div class="timer-ring">
+                        <div>
+                            <div class="timer-display" id="timerDisplay">25:00</div>
+                            <div class="timer-status" id="timerStatus">Ready to focus</div>
+                        </div>
+                    </div>
+
+                    <div class="timer-controls">
+                        <button class="btn btn-primary" id="timerStart">
+                            <i class="fa-solid fa-play"></i> Start focus
+                        </button>
+                        <button class="btn btn-secondary" id="timerReset">
+                            <i class="fa-solid fa-rotate-left"></i> Reset
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card timer-info">
+                    <div class="eyebrow">THE POMODORO METHOD</div>
+                    <h3>Work with your energy.</h3>
+                    <p>Focus on a single task, then take a real break. You don't have to do everything at once.</p>
+
+                    <div class="tip">
+                        <i class="fa-solid fa-bullseye"></i>
+                        <p><strong>25 minutes of focus</strong><br>Choose one task and silence distractions.</p>
+                    </div>
+                    <div class="tip">
+                        <i class="fa-solid fa-mug-hot"></i>
+                        <p><strong>5 minutes to reset</strong><br>Stretch, hydrate, or rest your eyes.</p>
+                    </div>
+                    <div class="tip">
+                        <i class="fa-solid fa-leaf"></i>
+                        <p><strong>Consistency over perfection</strong><br>Even one focused session is progress.</p>
+                    </div>
+
+                    <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--border)">
+                        <div class="progress-meta">
+                            <span>Total focus time</span>
+                            <strong id="totalFocusTime">0 minutes</strong>
+                        </div>
+                        <div class="progress-meta">
+                            <span>Sessions completed</span>
+                            <strong id="totalSessions">0</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="main-footer">
+            <span>© <span id="footerYear"></span> StudyHub. Built for better days.</span>
+            <span>Stay curious. Keep growing. ✦</span>
+        </footer>
+    </main>
 </div>
 
+<!-- TASK MODAL -->
+<div class="modal" id="taskModal" role="dialog" aria-modal="true" aria-labelledby="taskModalTitle">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2 id="taskModalTitle">Create a task</h2>
+            <button class="modal-close" onclick="closeModal('taskModal')" aria-label="Close">&times;</button>
+        </div>
+
+        <form id="taskForm">
+            <input type="hidden" id="taskId">
+
+            <div class="field">
+                <label for="taskTitle">Task title *</label>
+                <input id="taskTitle" maxlength="120" required placeholder="e.g. Finish programming assignment">
+            </div>
+
+            <div class="field">
+                <label for="taskDescription">Description</label>
+                <textarea id="taskDescription" maxlength="1500" placeholder="Add details or reminders..."></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="field">
+                    <label for="taskSubject">Subject / category</label>
+                    <input id="taskSubject" maxlength="80" placeholder="e.g. Programming">
+                </div>
+                <div class="field">
+                    <label for="taskDeadline">Deadline</label>
+                    <input type="date" id="taskDeadline">
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="taskPriority">Priority</label>
+                <select id="taskPriority">
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save task</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('taskModal')">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- SCHEDULE MODAL -->
+<div class="modal" id="scheduleModal" role="dialog" aria-modal="true" aria-labelledby="scheduleModalTitle">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2 id="scheduleModalTitle">Add study session</h2>
+            <button class="modal-close" onclick="closeModal('scheduleModal')" aria-label="Close">&times;</button>
+        </div>
+
+        <form id="scheduleForm">
+            <input type="hidden" id="scheduleId">
+
+            <div class="field">
+                <label for="scheduleTitle">Session / subject *</label>
+                <input id="scheduleTitle" maxlength="120" required placeholder="e.g. Data Structures">
+            </div>
+
+            <div class="form-row">
+                <div class="field">
+                    <label for="scheduleDay">Day *</label>
+                    <select id="scheduleDay" required>
+                        <option value="Senin">Monday / Senin</option>
+                        <option value="Selasa">Tuesday / Selasa</option>
+                        <option value="Rabu">Wednesday / Rabu</option>
+                        <option value="Kamis">Thursday / Kamis</option>
+                        <option value="Jumat">Friday / Jumat</option>
+                        <option value="Sabtu">Saturday / Sabtu</option>
+                        <option value="Minggu">Sunday / Minggu</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="scheduleTime">Start time *</label>
+                    <input type="time" id="scheduleTime" required value="08:00">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="field">
+                    <label for="scheduleEnd">End time</label>
+                    <input type="time" id="scheduleEnd" value="10:00">
+                </div>
+                <div class="field">
+                    <label for="scheduleLocation">Location / platform</label>
+                    <input id="scheduleLocation" maxlength="100" placeholder="e.g. Room B310">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save session</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('scheduleModal')">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- NOTE MODAL -->
+<div class="modal" id="noteModal" role="dialog" aria-modal="true" aria-labelledby="noteModalTitle">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2 id="noteModalTitle">Write a note</h2>
+            <button class="modal-close" onclick="closeModal('noteModal')" aria-label="Close">&times;</button>
+        </div>
+
+        <form id="noteForm">
+            <input type="hidden" id="noteId">
+
+            <div class="field">
+                <label for="noteTitle">Title *</label>
+                <input id="noteTitle" maxlength="120" required placeholder="Give your note a title">
+            </div>
+
+            <div class="field">
+                <label for="noteContent">Your notes *</label>
+                <textarea id="noteContent" maxlength="10000" required style="min-height:200px" placeholder="Write down your ideas..."></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save note</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('noteModal')">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <script>
-const $ = id => document.getElementById(id);
+"use strict";
 
-function load(key) {
-  try { return JSON.parse(localStorage.getItem("studyhub_" + key)) || []; }
-  catch { return []; }
+/* ==========================================
+   STUDYHUB — LOCAL DATA & UTILITIES
+========================================== */
+
+const STORAGE_KEY = "studyhub_data_v1";
+
+const DAY_ORDER = [
+    "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"
+];
+
+const DAY_MAP = [
+    "Minggu", "Senin", "Selasa", "Rabu",
+    "Kamis", "Jumat", "Sabtu"
+];
+
+const DEFAULT_DATA = {
+    tasks: [],
+    schedules: [],
+    notes: [],
+    focusMinutes: 0,
+    sessions: 0
+};
+
+function loadData() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+
+        if (!raw) return structuredClone(DEFAULT_DATA);
+
+        const parsed = JSON.parse(raw);
+
+        return {
+            tasks: Array.isArray(parsed.tasks) ? parsed.tasks : [],
+            schedules: Array.isArray(parsed.schedules) ? parsed.schedules : [],
+            notes: Array.isArray(parsed.notes) ? parsed.notes : [],
+            focusMinutes: Number(parsed.focusMinutes) || 0,
+            sessions: Number(parsed.sessions) || 0
+        };
+    } catch (error) {
+        console.error("Could not load StudyHub data:", error);
+        return structuredClone(DEFAULT_DATA);
+    }
 }
-function save(key, value) {
-  try {
-    localStorage.setItem("studyhub_" + key, JSON.stringify(value));
-  } catch {
-    alert("Data gagal disimpan. Periksa penyimpanan browser kamu.");
-  }
+
+let data = loadData();
+
+function saveData() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        updateDashboard();
+        return true;
+    } catch (error) {
+        console.error("Could not save StudyHub data:", error);
+        showToast("Unable to save data. Check your browser storage.");
+        return false;
+    }
 }
 
-let tasks = load("tasks");
-let classes = load("classes");
-let notes = load("notes");
-
-const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-const todayName = weekdays[new Date().getDay()];
-const todayDate = new Date();
-
-$("today").textContent = todayDate.toLocaleDateString("id-ID", {
-  day:"numeric", month:"short", year:"numeric"
-});
-$("greeting").textContent =
-  (todayDate.getHours() < 12 ? "Good morning!" :
-  todayDate.getHours() < 18 ? "Good afternoon!" : "Good evening!") + " 👋";
+function makeId() {
+    return Date.now().toString(36) +
+        Math.random().toString(36).slice(2, 9);
+}
 
 function escapeHTML(value) {
-  return String(value).replace(/[&<>"']/g, char => ({
-    "&":"&amp;", "<":"&lt;", ">":"&gt;",
-    '"':"&quot;", "'":"&#39;"
-  })[char]);
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    })[character]);
 }
 
-function showView(id) {
-  document.querySelectorAll(".view").forEach(v => v.classList.toggle("active", v.id === id));
-  document.querySelectorAll(".nav").forEach(b => b.classList.toggle("active", b.dataset.view === id));
-  window.scrollTo({top:0, behavior:"smooth"});
+function formatDate(dateString) {
+    if (!dateString) return "No deadline";
+
+    const date = new Date(dateString + "T00:00:00");
+
+    if (Number.isNaN(date.getTime())) return "No deadline";
+
+    return date.toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    });
 }
-document.querySelectorAll(".nav").forEach(b => b.addEventListener("click", () => showView(b.dataset.view)));
 
-function renderTasks() {
-  const filter = $("taskFilter").value;
-  const filtered = tasks.filter(t =>
-    filter === "all" || (filter === "active" && !t.done) || (filter === "done" && t.done)
-  );
-  const taskHTML = (t, i) => `
-    <div class="task ${t.done ? "done" : ""}">
-      <input type="checkbox" aria-label="Mark task complete" ${t.done ? "checked" : ""}
-        onchange="toggleTask('${t.id}')">
-      <div class="task-content">
-        <div class="task-title">${escapeHTML(t.title)}</div>
-        <div class="muted small">${escapeHTML(t.subject || "Personal task")}${t.deadline ? " · Due " + escapeHTML(t.deadline) : ""}</div>
-        <span class="tag ${t.priority === "High" ? "high" : t.priority === "Low" ? "low" : ""}">${escapeHTML(t.priority)}</span>
-      </div>
-      <button class="icon-btn" aria-label="Delete task" onclick="deleteTask('${t.id}')">✕</button>
-    </div>`;
-  $("allTasks").innerHTML = filtered.length ? filtered.map(taskHTML).join("") :
-    '<div class="empty">No tasks here yet. Add one above ✦</div>';
-
-  const upcoming = [...tasks].filter(t => !t.done)
-    .sort((a,b) => (a.deadline || "9999").localeCompare(b.deadline || "9999")).slice(0,4);
-  $("dashTasks").innerHTML = upcoming.length ? upcoming.map(taskHTML).join("") :
-    '<div class="empty">You’re all caught up! Add a task when you need one.</div>';
-
-  const total = tasks.length;
-  const done = tasks.filter(t => t.done).length;
-  const percent = total ? Math.round(done / total * 100) : 0;
-  $("total").textContent = total;
-  $("completed").textContent = done;
-  $("remaining").textContent = total - done;
-  $("percent").textContent = percent + "%";
-  $("progressbar").style.width = percent + "%";
-  $("progresslabel").textContent = `${done} of ${total} tasks completed`;
+function todayISO() {
+    const now = new Date();
+    const offset = now.getTimezoneOffset() * 60000;
+    return new Date(now.getTime() - offset).toISOString().slice(0, 10);
 }
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    clearTimeout(showToast.timeout);
+
+    showToast.timeout = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2800);
+}
+
+/* ==========================================
+   NAVIGATION
+========================================== */
+
+const PAGE_CONFIG = {
+    dashboard: {
+        title: "Good day, Student. ✦",
+        subtitle: "A little progress each day adds up to big results.",
+        eyebrow: "YOUR PERSONAL WORKSPACE"
+    },
+    tasks: {
+        title: "My Tasks",
+        subtitle: "Make a plan. Take a step. Repeat.",
+        eyebrow: "YOUR TO-DO LIST"
+    },
+    schedule: {
+        title: "Study Schedule",
+        subtitle: "Give your goals a place in your day.",
+        eyebrow: "YOUR WEEKLY PLAN"
+    },
+    notes: {
+        title: "My Notes",
+        subtitle: "Your thoughts deserve a place to live.",
+        eyebrow: "YOUR PERSONAL LIBRARY"
+    },
+    pomodoro: {
+        title: "Focus Room",
+        subtitle: "Less distraction. More intention.",
+        eyebrow: "TIME TO LOCK IN"
+    }
+};
+
+function navigate(page) {
+    if (!PAGE_CONFIG[page]) return;
+
+    document.querySelectorAll(".page").forEach(section => {
+        section.classList.toggle(
+            "active",
+            section.id === "page-" + page
+        );
+    });
+
+    document.querySelectorAll(".nav-btn").forEach(button => {
+        button.classList.toggle(
+            "active",
+            button.dataset.page === page
+        );
+    });
+
+    document.getElementById("pageTitle").textContent =
+        PAGE_CONFIG[page].title;
+
+    document.getElementById("pageSubtitle").textContent =
+        PAGE_CONFIG[page].subtitle;
+
+    document.getElementById("pageEyebrow").textContent =
+        PAGE_CONFIG[page].eyebrow;
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.querySelectorAll(".nav-btn").forEach(button => {
+    button.addEventListener("click", () => {
+        navigate(button.dataset.page);
+    });
+});
+
+/* ==========================================
+   DASHBOARD
+========================================== */
+
+function updateDashboard() {
+    const total = data.tasks.length;
+    const completed = data.tasks.filter(task => task.completed).length;
+    const pending = total - completed;
+    const progress = total ? Math.round(completed / total * 100) : 0;
+
+    document.getElementById("statTotal").textContent = total;
+    document.getElementById("statCompleted").textContent = completed;
+    document.getElementById("statPending").textContent = pending;
+    document.getElementById("statProgress").textContent = progress + "%";
+
+    document.getElementById("progressLabel").textContent = progress + "%";
+    document.getElementById("progressBar").style.width = progress + "%";
+
+    let message = "Start with one small task today.";
+
+    if (progress === 100 && total > 0) {
+        message = "Amazing! You completed every task. ✨";
+    } else if (progress >= 70) {
+        message = "You're so close. Keep that momentum going!";
+    } else if (progress >= 30) {
+        message = "You're making progress. Keep going!";
+    }
+
+    document.getElementById("progressMessage").textContent = message;
+
+    document.getElementById("overviewNotes").textContent =
+        `${data.notes.length} saved ${data.notes.length === 1 ? "note" : "notes"}`;
+
+    document.getElementById("overviewSchedule").textContent =
+        `${data.schedules.length} study ${data.schedules.length === 1 ? "session" : "sessions"}`;
+
+    document.getElementById("overviewFocus").textContent =
+        `${data.focusMinutes} minutes focused`;
+
+    document.getElementById("totalFocusTime").textContent =
+        `${data.focusMinutes} minutes`;
+
+    document.getElementById("totalSessions").textContent =
+        data.sessions;
+
+    renderDashboardTasks();
+    renderTasks();
+    renderSchedules();
+    renderNotes();
+}
+
+function renderDashboardTasks() {
+    const container = document.getElementById("dashboardTasks");
+
+    const tasks = [...data.tasks]
+        .filter(task => !task.completed)
+        .sort((a, b) => {
+            if (!a.deadline) return 1;
+            if (!b.deadline) return -1;
+            return a.deadline.localeCompare(b.deadline);
+        })
+        .slice(0, 4);
+
+    if (!tasks.length) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fa-solid fa-check-double"></i>
+                <strong>You're all caught up!</strong><br>
+                Add a task whenever something new comes up.
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = tasks.map(task => `
+        <div class="task-row">
+            <button class="check-btn"
+                aria-label="Complete ${escapeHTML(task.title)}"
+                onclick="toggleTask('${task.id}')">
+                <i class="fa-solid fa-check"></i>
+            </button>
+            <div class="task-content">
+                <strong>${escapeHTML(task.title)}</strong>
+                <small>${escapeHTML(task.subject || "Personal task")} · ${escapeHTML(formatDate(task.deadline))}</small>
+            </div>
+            <span class="priority ${task.priority}">
+                ${task.priority === "high" ? "HIGH" : task.priority === "low" ? "LOW" : "MED"}
+            </span>
+        </div>
+    `).join("");
+}
+
+/* ==========================================
+   TASK MANAGER
+========================================== */
+
+function openTaskModal(id = null) {
+    const form = document.getElementById("taskForm");
+    form.reset();
+
+    document.getElementById("taskId").value = "";
+    document.getElementById("taskModalTitle").textContent = "Create a task";
+
+    if (id) {
+        const task = data.tasks.find(item => item.id === id);
+        if (!task) return;
+
+        document.getElementById("taskId").value = task.id;
+        document.getElementById("taskTitle").value = task.title;
+        document.getElementById("taskDescription").value = task.description || "";
+        document.getElementById("taskSubject").value = task.subject || "";
+        document.getElementById("taskDeadline").value = task.deadline || "";
+        document.getElementById("taskPriority").value = task.priority || "medium";
+
+        document.getElementById("taskModalTitle").textContent = "Edit task";
+    }
+
+    openModal("taskModal");
+    setTimeout(() => document.getElementById("taskTitle").focus(), 50);
+}
+
+document.getElementById("taskForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const id = document.getElementById("taskId").value;
+    const title = document.getElementById("taskTitle").value.trim();
+
+    if (!title) {
+        showToast("Please enter a task title.");
+        return;
+    }
+
+    const existing = data.tasks.find(task => task.id === id);
+
+    const task = {
+        id: id || makeId(),
+        title,
+        description: document.getElementById("taskDescription").value.trim(),
+        subject: document.getElementById("taskSubject").value.trim(),
+        deadline: document.getElementById("taskDeadline").value,
+        priority: document.getElementById("taskPriority").value,
+        completed: existing ? existing.completed : false,
+        createdAt: existing ? existing.createdAt : Date.now()
+    };
+
+    if (existing) {
+        data.tasks = data.tasks.map(item => item.id === id ? task : item);
+    } else {
+        data.tasks.push(task);
+    }
+
+    saveData();
+    closeModal("taskModal");
+
+    showToast(existing ? "Task updated successfully!" : "New task added!");
+});
 
 function toggleTask(id) {
-  tasks = tasks.map(t => t.id === id ? {...t, done:!t.done} : t);
-  save("tasks", tasks); renderTasks();
-}
-function deleteTask(id) {
-  tasks = tasks.filter(t => t.id !== id);
-  save("tasks", tasks); renderTasks();
-}
-$("taskForm").addEventListener("submit", e => {
-  e.preventDefault();
-  tasks.push({
-    id:crypto.randomUUID(), title:$("taskTitle").value.trim(),
-    subject:$("taskSubject").value.trim(), deadline:$("taskDeadline").value,
-    priority:$("taskPriority").value, done:false
-  });
-  save("tasks", tasks); e.target.reset(); renderTasks();
-});
-$("taskFilter").addEventListener("change", renderTasks);
+    const task = data.tasks.find(item => item.id === id);
+    if (!task) return;
 
-function renderClasses() {
-  const sorted = [...classes].sort((a,b) =>
-    weekdays.indexOf(a.day) - weekdays.indexOf(b.day) || a.time.localeCompare(b.time)
-  );
-  const classHTML = c => `
-    <div class="schedule-item">
-      <div class="time">${escapeHTML(c.day)} · ${escapeHTML(c.time)}</div>
-      <strong>${escapeHTML(c.name)}</strong>
-      <div class="muted small">${escapeHTML(c.room || "Room not specified")}</div>
-      <button class="icon-btn" onclick="deleteClass('${c.id}')">Remove</button>
-    </div>`;
-  $("allSchedule").innerHTML = sorted.length ? sorted.map(classHTML).join("") :
-    '<div class="empty">Your weekly schedule will appear here.</div>';
-  const todays = sorted.filter(c => c.day === todayName);
-  $("dashSchedule").innerHTML = todays.length ? todays.map(classHTML).join("") :
-    '<div class="empty">No classes scheduled for today.</div>';
+    task.completed = !task.completed;
+
+    saveData();
+
+    showToast(task.completed ? "Task completed. Great job! ✨" : "Task marked as pending.");
 }
-$("classForm").addEventListener("submit", e => {
-  e.preventDefault();
-  classes.push({
-    id:crypto.randomUUID(), name:$("className").value.trim(),
-    day:$("classDay").value, time:$("classTime").value,
-    room:$("classRoom").value.trim()
-  });
-  save("classes", classes); e.target.reset(); renderClasses();
+
+function deleteTask(id) {
+    const task = data.tasks.find(item => item.id === id);
+    if (!task) return;
+
+    if (!confirm(`Delete "${task.title}"? This cannot be undone.`)) return;
+
+    data.tasks = data.tasks.filter(item => item.id !== id);
+
+    saveData();
+    showToast("Task deleted.");
+}
+
+function renderTasks() {
+    const container = document.getElementById("allTasks");
+    const query = document.getElementById("taskSearch").value.toLowerCase().trim();
+    const filter = document.getElementById("taskFilter").value;
+    const sort = document.getElementById("taskSort").value;
+
+    let tasks = [...data.tasks].filter(task => {
+        const matchesSearch =
+            task.title.toLowerCase().includes(query) ||
+            (task.subject || "").toLowerCase().includes(query) ||
+            (task.description || "").toLowerCase().includes(query);
+
+        const matchesFilter =
+            filter === "all" ||
+            (filter === "pending" && !task.completed) ||
+            (filter === "completed" && task.completed) ||
+            (filter === "high" && task.priority === "high");
+
+        return matchesSearch && matchesFilter;
+    });
+
+    if (sort === "deadline") {
+        tasks.sort((a, b) => {
+            if (!a.deadline) return 1;
+            if (!b.deadline) return -1;
+            return a.deadline.localeCompare(b.deadline);
+        });
+    } else if (sort === "priority") {
+        const rank = { high: 0, medium: 1, low: 2 };
+        tasks.sort((a, b) => rank[a.priority] - rank[b.priority]);
+    } else {
+        tasks.sort((a, b) => b.createdAt - a.createdAt);
+    }
+
+    if (!tasks.length) {
+        container.innerHTML = `
+            <div class="card empty-state">
+                <i class="fa-solid fa-clipboard-list"></i>
+                <strong>No tasks found.</strong><br>
+                Add a task or adjust your search filters.
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = tasks.map(task => `
+        <article class="full-task ${task.completed ? "done" : ""}">
+            <button class="check-btn ${task.completed ? "checked" : ""}"
+                aria-label="Toggle task completion"
+                aria-pressed="${task.completed}"
+                onclick="toggleTask('${task.id}')">
+                ${task.completed ? '<i class="fa-solid fa-check"></i>' : ""}
+            </button>
+
+            <div class="task-content">
+                <strong>${escapeHTML(task.title)}</strong>
+
+                ${task.description ? `
+                    <p class="task-description">${escapeHTML(task.description)}</p>
+                ` : ""}
+
+                <div class="task-meta">
+                    <span class="priority ${task.priority}">
+                        ${task.priority.toUpperCase()} PRIORITY
+                    </span>
+                    ${task.subject ? `<span class="muted" style="font-size:11px">${escapeHTML(task.subject)}</span>` : ""}
+                    <span class="muted" style="font-size:11px">
+                        <i class="fa-regular fa-calendar"></i>
+                        ${escapeHTML(formatDate(task.deadline))}
+                    </span>
+                </div>
+            </div>
+
+            <div class="task-actions">
+                <button class="icon-btn" aria-label="Edit task"
+                    onclick="openTaskModal('${task.id}')">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+                <button class="icon-btn delete" aria-label="Delete task"
+                    onclick="deleteTask('${task.id}')">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        </article>
+    `).join("");
+}
+
+["taskSearch", "taskFilter", "taskSort"].forEach(id => {
+    document.getElementById(id).addEventListener("input", renderTasks);
 });
-function deleteClass(id) {
-  classes = classes.filter(c => c.id !== id);
-  save("classes", classes); renderClasses();
+
+/* ==========================================
+   STUDY SCHEDULE
+========================================== */
+
+function openScheduleModal(id = null) {
+    document.getElementById("scheduleForm").reset();
+    document.getElementById("scheduleId").value = "";
+    document.getElementById("scheduleModalTitle").textContent = "Add study session";
+
+    if (id) {
+        const item = data.schedules.find(schedule => schedule.id === id);
+        if (!item) return;
+
+        document.getElementById("scheduleId").value = item.id;
+        document.getElementById("scheduleTitle").value = item.title;
+        document.getElementById("scheduleDay").value = item.day;
+        document.getElementById("scheduleTime").value = item.time;
+        document.getElementById("scheduleEnd").value = item.end || "";
+        document.getElementById("scheduleLocation").value = item.location || "";
+        document.getElementById("scheduleModalTitle").textContent = "Edit study session";
+    }
+
+    openModal("scheduleModal");
+}
+
+document.getElementById("scheduleForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const id = document.getElementById("scheduleId").value;
+    const title = document.getElementById("scheduleTitle").value.trim();
+    const time = document.getElementById("scheduleTime").value;
+    const end = document.getElementById("scheduleEnd").value;
+
+    if (!title || !time) {
+        showToast("Please fill in the required fields.");
+        return;
+    }
+
+    if (end && end <= time) {
+        showToast("End time must be later than start time.");
+        return;
+    }
+
+    const existing = data.schedules.find(item => item.id === id);
+
+    const schedule = {
+        id: id || makeId(),
+        title,
+        day: document.getElementById("scheduleDay").value,
+        time,
+        end,
+        location: document.getElementById("scheduleLocation").value.trim(),
+        createdAt: existing ? existing.createdAt : Date.now()
+    };
+
+    if (existing) {
+        data.schedules = data.schedules.map(item => item.id === id ? schedule : item);
+    } else {
+        data.schedules.push(schedule);
+    }
+
+    saveData();
+    closeModal("scheduleModal");
+
+    showToast(existing ? "Study session updated!" : "Study session added!");
+});
+
+function deleteSchedule(id) {
+    if (!confirm("Delete this study session?")) return;
+
+    data.schedules = data.schedules.filter(item => item.id !== id);
+
+    saveData();
+    showToast("Study session deleted.");
+}
+
+function renderSchedules() {
+    const container = document.getElementById("scheduleList");
+    const query = document.getElementById("scheduleSearch").value.toLowerCase().trim();
+    const selectedDay = document.getElementById("scheduleDayFilter").value;
+
+    const schedules = [...data.schedules]
+        .filter(item => {
+            const matchesSearch =
+                item.title.toLowerCase().includes(query) ||
+                (item.location || "").toLowerCase().includes(query);
+
+            return matchesSearch &&
+                (selectedDay === "all" || item.day === selectedDay);
+        })
+        .sort((a, b) => {
+            const dayDiff = DAY_ORDER.indexOf(a.day) - DAY_ORDER.indexOf(b.day);
+            return dayDiff || a.time.localeCompare(b.time);
+        });
+
+    if (!schedules.length) {
+        container.innerHTML = `
+            <div class="card empty-state">
+                <i class="fa-regular fa-calendar"></i>
+                <strong>Your schedule is looking peaceful.</strong><br>
+                Add your first class or study session.
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = schedules.map(item => `
+        <article class="schedule-item">
+            <div class="schedule-time">
+                ${escapeHTML(item.time)}
+                ${item.end ? `<div style="font-size:10px;color:var(--muted);margin-top:4px">${escapeHTML(item.end)}</div>` : ""}
+            </div>
+
+            <div class="schedule-line"></div>
+
+            <div class="schedule-info">
+                <strong>${escapeHTML(item.title)}</strong>
+                <p>${escapeHTML(item.day)}${item.location ? " · " + escapeHTML(item.location) : ""}</p>
+            </div>
+
+            <div class="task-actions">
+                <button class="icon-btn" aria-label="Edit schedule"
+                    onclick="openScheduleModal('${item.id}')">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+                <button class="icon-btn delete" aria-label="Delete schedule"
+                    onclick="deleteSchedule('${item.id}')">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        </article>
+    `).join("");
+}
+
+["scheduleSearch", "scheduleDayFilter"].forEach(id => {
+    document.getElementById(id).addEventListener("input", renderSchedules);
+});
+
+/* ==========================================
+   NOTES
+========================================== */
+
+function openNoteModal(id = null) {
+    document.getElementById("noteForm").reset();
+    document.getElementById("noteId").value = "";
+    document.getElementById("noteModalTitle").textContent = "Write a note";
+
+    if (id) {
+        const note = data.notes.find(item => item.id === id);
+        if (!note) return;
+
+        document.getElementById("noteId").value = note.id;
+        document.getElementById("noteTitle").value = note.title;
+        document.getElementById("noteContent").value = note.content;
+        document.getElementById("noteModalTitle").textContent = "Edit note";
+    }
+
+    openModal("noteModal");
+}
+
+document.getElementById("noteForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const id = document.getElementById("noteId").value;
+    const title = document.getElementById("noteTitle").value.trim();
+    const content = document.getElementById("noteContent").value.trim();
+
+    if (!title || !content) {
+        showToast("Please fill in the note title and content.");
+        return;
+    }
+
+    const existing = data.notes.find(note => note.id === id);
+
+    const note = {
+        id: id || makeId(),
+        title,
+        content,
+        createdAt: existing ? existing.createdAt : Date.now(),
+        updatedAt: Date.now()
+    };
+
+    if (existing) {
+        data.notes = data.notes.map(item => item.id === id ? note : item);
+    } else {
+        data.notes.unshift(note);
+    }
+
+    saveData();
+    closeModal("noteModal");
+
+    showToast(existing ? "Note updated!" : "Note saved!");
+});
+
+function deleteNote(id) {
+    const note = data.notes.find(item => item.id === id);
+    if (!note) return;
+
+    if (!confirm(`Delete note "${note.title}"?`)) return;
+
+    data.notes = data.notes.filter(item => item.id !== id);
+
+    saveData();
+    showToast("Note deleted.");
 }
 
 function renderNotes() {
-  $("allNotes").innerHTML = notes.length ? [...notes].reverse().map(n => `
-    <article class="note">
-      <strong>${escapeHTML(n.title)}</strong>
-      <p>${escapeHTML(n.body)}</p>
-      <small>${escapeHTML(n.date)}</small>
-      <button class="icon-btn" onclick="deleteNote('${n.id}')">Delete note</button>
-    </article>`).join("") : '<div class="empty">Your notes will appear here.</div>';
-}
-$("noteForm").addEventListener("submit", e => {
-  e.preventDefault();
-  notes.push({
-    id:crypto.randomUUID(), title:$("noteTitle").value.trim(),
-    body:$("noteBody").value.trim(),
-    date:new Date().toLocaleDateString("id-ID")
-  });
-  save("notes", notes); e.target.reset(); renderNotes();
-});
-function deleteNote(id) {
-  notes = notes.filter(n => n.id !== id);
-  save("notes", notes); renderNotes();
-}
+    const container = document.getElementById("notesGrid");
+    const query = document.getElementById("noteSearch").value.toLowerCase().trim();
 
-let remainingSeconds = 25 * 60;
-let timerInterval = null;
-function updateTimer() {
-  const m = Math.floor(remainingSeconds / 60);
-  const s = remainingSeconds % 60;
-  $("timerDisplay").textContent = `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
-}
-function pauseTimer() {
-  clearInterval(timerInterval); timerInterval = null;
-}
-$("startTimer").addEventListener("click", () => {
-  if (timerInterval) return;
-  $("timerStatus").textContent = "Focus mode is on. You got this!";
-  timerInterval = setInterval(() => {
-    remainingSeconds--;
-    updateTimer();
-    if (remainingSeconds <= 0) {
-      pauseTimer();
-      remainingSeconds = 0; updateTimer();
-      $("timerStatus").textContent = "Session complete! Take a little break ✦";
-      alert("Focus session complete! Great job!");
+    const notes = [...data.notes]
+        .filter(note =>
+            note.title.toLowerCase().includes(query) ||
+            note.content.toLowerCase().includes(query)
+        )
+        .sort((a, b) => b.updatedAt - a.updatedAt);
+
+    if (!notes.length) {
+        container.innerHTML = `
+            <div class="card empty-state" style="grid-column:1/-1">
+                <i class="fa-regular fa-note-sticky"></i>
+                <strong>No notes yet.</strong><br>
+                Start collecting your best ideas here.
+            </div>`;
+        return;
     }
-  }, 1000);
-});
-$("pauseTimer").addEventListener("click", () => {
-  pauseTimer(); $("timerStatus").textContent = "Timer paused.";
-});
-$("resetTimer").addEventListener("click", () => {
-  pauseTimer(); remainingSeconds = 25 * 60; updateTimer();
-  $("timerStatus").textContent = "Ready when you are.";
-});
-document.querySelectorAll(".mode").forEach(b => b.addEventListener("click", () => {
-  pauseTimer(); remainingSeconds = Number(b.dataset.minutes) * 60;
-  updateTimer(); $("timerStatus").textContent = "New session ready.";
-}));
 
-renderTasks();
-renderClasses();
-renderNotes();
-updateTimer();
+    container.innerHTML = notes.map(note => `
+        <article class="note-card">
+            <h3>${escapeHTML(note.title)}</h3>
+            <p>${escapeHTML(note.content)}</p>
+            <div class="note-bottom">
+                <span>${escapeHTML(new Date(note.updatedAt).toLocaleDateString("id-ID"))}</span>
+                <div class="task-actions">
+                    <button class="icon-btn" aria-label="Edit note"
+                        onclick="openNoteModal('${note.id}')">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button class="icon-btn delete" aria-label="Delete note"
+                        onclick="deleteNote('${note.id}')">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    `).join("");
+}
+
+document.getElementById("noteSearch").addEventListener("input", renderNotes);
+
+/* ==========================================
+   POMODORO TIMER
+========================================== */
+
+const TIMER_MODES = {
+    focus: { seconds: 25 * 60, label: "Ready to focus" },
+    short: { seconds: 5 * 60, label: "Time for a short break" },
+    long: { seconds: 15 * 60, label: "Take a longer break" }
+};
+
+let timerMode = "focus";
+let remainingSeconds = TIMER_MODES[timerMode].seconds;
+let timerInterval = null;
+let timerRunning = false;
+let endTimestamp = null;
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(remainingSeconds / 60);
+    const seconds = remainingSeconds % 60;
+
+    document.getElementById("timerDisplay").textContent =
+        `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+    document.getElementById("timerStatus").textContent =
+        timerRunning ? "You're in the zone..." : TIMER_MODES[timerMode].label;
+
+    document.getElementById("timerStart").innerHTML = timerRunning
+        ? '<i class="fa-solid fa-pause"></i> Pause'
+        : '<i class="fa-solid fa-play"></i> ' +
+            (remainingSeconds < TIMER_MODES[timerMode].seconds ? "Resume" : "Start focus");
+
+    document.title = timerRunning
+        ? `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")} — StudyHub`
+        : "StudyHub — Your Space to Grow";
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timerRunning = false;
+    endTimestamp = null;
+}
+
+function startTimer() {
+    if (timerRunning) {
+        const now = Date.now();
+        remainingSeconds = Math.max(0, Math.ceil((endTimestamp - now) / 1000));
+
+        stopTimer();
+        updateTimerDisplay();
+        return;
+    }
+
+    if (remainingSeconds <= 0) {
+        remainingSeconds = TIMER_MODES[timerMode].seconds;
+    }
+
+    timerRunning = true;
+    endTimestamp = Date.now() + remainingSeconds * 1000;
+
+    timerInterval = setInterval(() => {
+        remainingSeconds = Math.max(
+            0,
+            Math.ceil((endTimestamp - Date.now()) / 1000)
+        );
+
+        updateTimerDisplay();
+
+        if (remainingSeconds <= 0) {
+            finishTimer();
+        }
+    }, 250);
+
+    updateTimerDisplay();
+}
+
+function resetTimer() {
+    stopTimer();
+    remainingSeconds = TIMER_MODES[timerMode].seconds;
+    updateTimerDisplay();
+}
+
+function selectTimerMode(mode) {
+    if (!TIMER_MODES[mode]) return;
+
+    stopTimer();
+    timerMode = mode;
+    remainingSeconds = TIMER_MODES[mode].seconds;
+
+    document.querySelectorAll(".mode-btn").forEach(button => {
+        button.classList.toggle("active", button.dataset.mode === mode);
+    });
+
+    updateTimerDisplay();
+}
+
+function finishTimer() {
+    stopTimer();
+    remainingSeconds = 0;
+    updateTimerDisplay();
+
+    if (timerMode === "focus") {
+        data.focusMinutes += TIMER_MODES.focus.seconds / 60;
+        data.sessions += 1;
+        saveData();
+
+        showToast("Focus session complete! Time to take a break. ✨");
+    } else {
+        showToast("Break complete! Ready for another round?");
+    }
+
+    if ("Notification" in window && Notification.permission === "granted") {
+        try {
+            new Notification("StudyHub", {
+                body: timerMode === "focus"
+                    ? "Focus session complete. Take a break!"
+                    : "Your break is over. Ready to focus?"
+            });
+        } catch (error) {
+            console.log("Desktop notification unavailable.");
+        }
+    }
+}
+
+document.getElementById("timerStart").addEventListener("click", startTimer);
+document.getElementById("timerReset").addEventListener("click", resetTimer);
+
+document.querySelectorAll(".mode-btn").forEach(button => {
+    button.addEventListener("click", () => {
+        selectTimerMode(button.dataset.mode);
+    });
+});
+
+/* ==========================================
+   MODALS
+========================================== */
+
+function openModal(id) {
+    document.getElementById(id).classList.add("show");
+    document.body.style.overflow = "hidden";
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove("show");
+
+    if (!document.querySelector(".modal.show")) {
+        document.body.style.overflow = "";
+    }
+}
+
+document.querySelectorAll(".modal").forEach(modal => {
+    modal.addEventListener("click", event => {
+        if (event.target === modal) {
+            closeModal(modal.id);
+        }
+    });
+});
+
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+        const open = document.querySelector(".modal.show");
+        if (open) closeModal(open.id);
+    }
+});
+
+/* ==========================================
+   DATE, DAILY QUOTE & INITIALIZATION
+========================================== */
+
+function initializeDate() {
+    const now = new Date();
+
+    document.getElementById("todayDate").textContent =
+        now.toLocaleDateString("id-ID", {
+            weekday: "short",
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+        });
+
+    document.getElementById("footerYear").textContent =
+        now.getFullYear();
+}
+
+function initializeQuote() {
+    const quotes = [
+        "Small steps every day lead to big changes.",
+        "You don't have to be perfect. Just keep showing up.",
+        "Focus on progress, not perfection.",
+        "Your future self will thank you for today's effort.",
+        "One focused hour can change the rest of your day.",
+        "Be patient with yourself. Growth takes time.",
+        "Little by little, a little becomes a lot."
+    ];
+
+    const day = Math.floor(Date.now() / 86400000);
+    document.getElementById("quoteText").textContent =
+        quotes[day % quotes.length];
+}
+
+initializeDate();
+initializeQuote();
+updateDashboard();
+updateTimerDisplay();
 </script>
 </body>
 </html>
+```
