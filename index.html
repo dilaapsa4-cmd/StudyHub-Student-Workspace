@@ -1,1 +1,463 @@
 
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyHub | Student Workspace</title>
+
+<style>
+:root {
+  --bg:#0b1020; --panel:#121a2e; --panel2:#1b2740;
+  --border:#293650; --text:#edf2ff; --muted:#94a3bd;
+  --blue:#80aaff; --purple:#b6a0ff; --green:#70e0b0;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--bg); color:var(--text);
+  font:14px/1.6 Arial,sans-serif;
+}
+button,input,select,textarea { font:inherit; }
+button { cursor:pointer; }
+.app { display:grid; grid-template-columns:220px 1fr; min-height:100vh; }
+aside { padding:25px 15px; background:#0e1527; border-right:1px solid var(--border); }
+.brand { font-size:23px; font-weight:800; margin:5px 8px 35px; }
+.brand span { color:var(--blue); }
+.nav-label { color:var(--muted); font-size:11px; margin:24px 10px 8px; }
+.nav {
+  width:100%; display:block; text-align:left; padding:11px;
+  margin:4px 0; color:var(--muted); background:transparent;
+  border:1px solid transparent; border-radius:9px;
+}
+.nav:hover,.nav.active { color:var(--blue); background:var(--panel2); border-color:var(--border); }
+.tip { margin-top:35px; padding:13px; background:var(--panel); border:1px solid var(--border); border-radius:12px; color:var(--muted); }
+main { min-width:0; padding:30px clamp(15px,4vw,42px); }
+.top { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:25px; }
+h1 { font-size:30px; line-height:1.2; margin:7px 0; }
+h2 { font-size:18px; margin:0 0 12px; }
+h3 { margin:0; font-size:14px; }
+p { margin:8px 0; }
+.muted { color:var(--muted); }
+.eyebrow { color:var(--blue); font-size:11px; letter-spacing:1.5px; font-weight:bold; }
+.hero {
+  padding:26px; border:1px solid #344a70; border-radius:17px;
+  background:radial-gradient(ellipse at 90% 0%,#344a80,transparent 48%),#192642;
+  margin-bottom:20px;
+}
+.hero h2 { font-size:25px; }
+.hero p { color:#c5d0e5; }
+.stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:20px 0; }
+.card,.stat { padding:17px; background:var(--panel); border:1px solid var(--border); border-radius:13px; min-width:0; }
+.stat-label { color:var(--muted); font-size:12px; }
+.stat-number { font-size:27px; font-weight:bold; margin-top:7px; }
+.layout { display:grid; grid-template-columns:minmax(0,1.4fr) minmax(250px,1fr); gap:17px; }
+.section-head { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:13px; }
+.btn {
+  border:0; border-radius:8px; padding:10px 14px;
+  background:var(--blue); color:#10182b; font-weight:bold;
+}
+.btn.secondary { background:var(--panel2); color:var(--text); border:1px solid var(--border); }
+.btn.danger { background:#492334; color:#ffb8c5; }
+input,select,textarea {
+  width:100%; padding:11px; color:var(--text); background:#0d1528;
+  border:1px solid var(--border); border-radius:8px; outline:none;
+}
+input:focus,select:focus,textarea:focus { border-color:var(--blue); }
+.form { display:grid; gap:10px; margin-bottom:17px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+.task {
+  display:flex; gap:10px; align-items:flex-start; padding:13px 0;
+  border-bottom:1px solid var(--border);
+}
+.task:last-child { border-bottom:0; }
+.task input[type=checkbox] { width:17px; margin-top:4px; accent-color:#80aaff; }
+.task-content { flex:1; min-width:0; overflow-wrap:anywhere; }
+.task.done .task-title { text-decoration:line-through; color:var(--muted); }
+.tag { display:inline-block; font-size:11px; padding:2px 7px; border-radius:5px; background:#263858; color:var(--blue); margin:5px 4px 0 0; }
+.tag.high { color:#ffb1bf; background:#472435; }
+.tag.low { color:var(--green); background:#173c36; }
+.icon-btn { border:0; background:transparent; color:var(--muted); padding:3px 6px; }
+.progress { height:8px; border-radius:10px; overflow:hidden; background:#28334a; margin:12px 0; }
+.progress div { height:100%; background:linear-gradient(90deg,var(--blue),var(--purple)); width:0; transition:width .3s; }
+.schedule-item { padding:11px 0; border-bottom:1px solid var(--border); }
+.schedule-item:last-child { border-bottom:0; }
+.time { color:var(--blue); font-size:12px; font-weight:bold; }
+.view { display:none; }
+.view.active { display:block; }
+.notes-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.note { padding:15px; background:var(--panel2); border-radius:10px; white-space:pre-wrap; overflow-wrap:anywhere; }
+.note small { display:block; color:var(--muted); margin-top:8px; }
+.timer { font-size:55px; font-weight:bold; text-align:center; margin:25px 0; font-variant-numeric:tabular-nums; }
+.timer-actions { display:flex; justify-content:center; gap:9px; flex-wrap:wrap; }
+.empty { text-align:center; color:var(--muted); padding:22px 5px; }
+footer { text-align:center; color:var(--muted); font-size:11px; padding:30px 0 5px; }
+@media(max-width:900px) {
+  .stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .layout { grid-template-columns:1fr; }
+}
+@media(max-width:600px) {
+  .app { display:block; }
+  aside { padding:12px; border-right:0; border-bottom:1px solid var(--border); }
+  .brand { margin:0 0 10px; font-size:20px; }
+  .nav-label,.tip { display:none; }
+  .navs { display:flex; gap:5px; overflow-x:auto; }
+  .nav { width:auto; flex-shrink:0; padding:8px 10px; font-size:12px; }
+  main { padding:20px 14px; }
+  h1 { font-size:25px; }
+  .hero { padding:19px; }
+  .hero h2 { font-size:21px; }
+  .stats { gap:8px; }
+  .stat,.card { padding:13px; }
+  .stat-number { font-size:23px; }
+  .top { align-items:flex-start; }
+  .date-chip { font-size:11px; padding:8px; }
+  .notes-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+<aside>
+  <div class="brand">✦ Study<span>Hub</span></div>
+  <div class="nav-label">WORKSPACE</div>
+  <div class="navs">
+    <button class="nav active" data-view="dashboard">⌂ Dashboard</button>
+    <button class="nav" data-view="tasks">☑ My Tasks</button>
+    <button class="nav" data-view="schedule">▦ Schedule</button>
+    <button class="nav" data-view="notes">▤ Quick Notes</button>
+    <button class="nav" data-view="timer">◷ Focus Timer</button>
+  </div>
+  <div class="tip">
+    ✦ <strong>Study reminder</strong>
+    <p>Small progress is still progress. Keep showing up for yourself.</p>
+  </div>
+</aside>
+
+<main>
+<header class="top">
+  <div>
+    <div class="eyebrow">YOUR PERSONAL WORKSPACE</div>
+    <h1 id="greeting">Welcome back! 👋</h1>
+    <div class="muted">Let's make today count.</div>
+  </div>
+  <div class="date-chip" id="today"></div>
+</header>
+
+<section class="view active" id="dashboard">
+  <div class="hero">
+    <div class="eyebrow">YOUR SPACE TO GROW</div>
+    <h2>Plan less chaotically.<br>Study more intentionally.</h2>
+    <p>One space for your assignments, classes, notes, and focus sessions.</p>
+    <button class="btn" onclick="showView('tasks')">+ Add a task</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Total Tasks</div><div class="stat-number" id="total">0</div></div>
+    <div class="stat"><div class="stat-label">Completed</div><div class="stat-number" id="completed">0</div></div>
+    <div class="stat"><div class="stat-label">Remaining</div><div class="stat-number" id="remaining">0</div></div>
+    <div class="stat"><div class="stat-label">Completion</div><div class="stat-number" id="percent">0%</div></div>
+  </div>
+
+  <div class="layout">
+    <div class="card">
+      <div class="section-head"><h2>Upcoming Tasks</h2><button class="btn secondary" onclick="showView('tasks')">View all ↗</button></div>
+      <div class="progress"><div id="progressbar"></div></div>
+      <div class="muted small" id="progresslabel">Your progress starts here.</div>
+      <div id="dashTasks"></div>
+    </div>
+    <div class="card">
+      <div class="section-head"><h2>Today's Classes</h2><button class="btn secondary" onclick="showView('schedule')">Edit ↗</button></div>
+      <div id="dashSchedule"></div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="tasks">
+  <div class="section-head"><div><div class="eyebrow">STAY ON TRACK</div><h1>My Tasks</h1></div></div>
+  <div class="card">
+    <h2>Add a new task</h2>
+    <form class="form" id="taskForm">
+      <input id="taskTitle" placeholder="What do you need to do?" required maxlength="120">
+      <div class="form-row">
+        <input id="taskSubject" placeholder="Subject / course">
+        <input id="taskDeadline" type="date">
+      </div>
+      <div class="form-row">
+        <select id="taskPriority">
+          <option value="Normal">Normal priority</option>
+          <option value="High">High priority</option>
+          <option value="Low">Low priority</option>
+        </select>
+        <button class="btn" type="submit">+ Add task</button>
+      </div>
+    </form>
+  </div>
+  <div class="card" style="margin-top:15px">
+    <div class="section-head"><h2>Your assignments</h2>
+      <select id="taskFilter" style="width:auto">
+        <option value="all">All tasks</option>
+        <option value="active">Remaining</option>
+        <option value="done">Completed</option>
+      </select>
+    </div>
+    <div id="allTasks"></div>
+  </div>
+</section>
+
+<section class="view" id="schedule">
+  <div class="eyebrow">ORGANIZE YOUR WEEK</div><h1>Class Schedule</h1>
+  <div class="card">
+    <h2>Add a class</h2>
+    <form class="form" id="classForm">
+      <input id="className" placeholder="Course name" required maxlength="100">
+      <div class="form-row">
+        <select id="classDay">
+          <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+          <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+        </select>
+        <input id="classTime" type="time" required>
+      </div>
+      <div class="form-row">
+        <input id="classRoom" placeholder="Room / online">
+        <button class="btn" type="submit">+ Add class</button>
+      </div>
+    </form>
+  </div>
+  <div class="card" style="margin-top:15px">
+    <h2>Your weekly classes</h2>
+    <div id="allSchedule"></div>
+  </div>
+</section>
+
+<section class="view" id="notes">
+  <div class="eyebrow">SAVE YOUR IDEAS</div><h1>Quick Notes</h1>
+  <div class="card">
+    <form class="form" id="noteForm">
+      <input id="noteTitle" placeholder="Note title" maxlength="100" required>
+      <textarea id="noteBody" rows="5" placeholder="Write your study notes here..." required maxlength="5000"></textarea>
+      <button class="btn" type="submit">Save note</button>
+    </form>
+  </div>
+  <div class="notes-grid" id="allNotes" style="margin-top:15px"></div>
+</section>
+
+<section class="view" id="timer">
+  <div class="eyebrow">DEEP WORK, ONE SESSION AT A TIME</div><h1>Focus Timer</h1>
+  <div class="card" style="max-width:500px;margin:20px auto">
+    <p class="muted" style="text-align:center">A little focus goes a long way.</p>
+    <div class="timer" id="timerDisplay">25:00</div>
+    <div class="timer-actions">
+      <button class="btn" id="startTimer">Start focus</button>
+      <button class="btn secondary" id="pauseTimer">Pause</button>
+      <button class="btn secondary" id="resetTimer">Reset</button>
+    </div>
+    <div class="timer-actions" style="margin-top:18px">
+      <button class="btn secondary mode" data-minutes="25">Focus · 25m</button>
+      <button class="btn secondary mode" data-minutes="5">Short break · 5m</button>
+      <button class="btn secondary mode" data-minutes="15">Long break · 15m</button>
+    </div>
+    <p class="muted small" id="timerStatus" style="text-align:center">Ready when you are.</p>
+  </div>
+</section>
+
+<footer>Made for your next chapter ✦ StudyHub</footer>
+</main>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+function load(key) {
+  try { return JSON.parse(localStorage.getItem("studyhub_" + key)) || []; }
+  catch { return []; }
+}
+function save(key, value) {
+  try {
+    localStorage.setItem("studyhub_" + key, JSON.stringify(value));
+  } catch {
+    alert("Data gagal disimpan. Periksa penyimpanan browser kamu.");
+  }
+}
+
+let tasks = load("tasks");
+let classes = load("classes");
+let notes = load("notes");
+
+const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const todayName = weekdays[new Date().getDay()];
+const todayDate = new Date();
+
+$("today").textContent = todayDate.toLocaleDateString("id-ID", {
+  day:"numeric", month:"short", year:"numeric"
+});
+$("greeting").textContent =
+  (todayDate.getHours() < 12 ? "Good morning!" :
+  todayDate.getHours() < 18 ? "Good afternoon!" : "Good evening!") + " 👋";
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;",
+    '"':"&quot;", "'":"&#39;"
+  })[char]);
+}
+
+function showView(id) {
+  document.querySelectorAll(".view").forEach(v => v.classList.toggle("active", v.id === id));
+  document.querySelectorAll(".nav").forEach(b => b.classList.toggle("active", b.dataset.view === id));
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+document.querySelectorAll(".nav").forEach(b => b.addEventListener("click", () => showView(b.dataset.view)));
+
+function renderTasks() {
+  const filter = $("taskFilter").value;
+  const filtered = tasks.filter(t =>
+    filter === "all" || (filter === "active" && !t.done) || (filter === "done" && t.done)
+  );
+  const taskHTML = (t, i) => `
+    <div class="task ${t.done ? "done" : ""}">
+      <input type="checkbox" aria-label="Mark task complete" ${t.done ? "checked" : ""}
+        onchange="toggleTask('${t.id}')">
+      <div class="task-content">
+        <div class="task-title">${escapeHTML(t.title)}</div>
+        <div class="muted small">${escapeHTML(t.subject || "Personal task")}${t.deadline ? " · Due " + escapeHTML(t.deadline) : ""}</div>
+        <span class="tag ${t.priority === "High" ? "high" : t.priority === "Low" ? "low" : ""}">${escapeHTML(t.priority)}</span>
+      </div>
+      <button class="icon-btn" aria-label="Delete task" onclick="deleteTask('${t.id}')">✕</button>
+    </div>`;
+  $("allTasks").innerHTML = filtered.length ? filtered.map(taskHTML).join("") :
+    '<div class="empty">No tasks here yet. Add one above ✦</div>';
+
+  const upcoming = [...tasks].filter(t => !t.done)
+    .sort((a,b) => (a.deadline || "9999").localeCompare(b.deadline || "9999")).slice(0,4);
+  $("dashTasks").innerHTML = upcoming.length ? upcoming.map(taskHTML).join("") :
+    '<div class="empty">You’re all caught up! Add a task when you need one.</div>';
+
+  const total = tasks.length;
+  const done = tasks.filter(t => t.done).length;
+  const percent = total ? Math.round(done / total * 100) : 0;
+  $("total").textContent = total;
+  $("completed").textContent = done;
+  $("remaining").textContent = total - done;
+  $("percent").textContent = percent + "%";
+  $("progressbar").style.width = percent + "%";
+  $("progresslabel").textContent = `${done} of ${total} tasks completed`;
+}
+
+function toggleTask(id) {
+  tasks = tasks.map(t => t.id === id ? {...t, done:!t.done} : t);
+  save("tasks", tasks); renderTasks();
+}
+function deleteTask(id) {
+  tasks = tasks.filter(t => t.id !== id);
+  save("tasks", tasks); renderTasks();
+}
+$("taskForm").addEventListener("submit", e => {
+  e.preventDefault();
+  tasks.push({
+    id:crypto.randomUUID(), title:$("taskTitle").value.trim(),
+    subject:$("taskSubject").value.trim(), deadline:$("taskDeadline").value,
+    priority:$("taskPriority").value, done:false
+  });
+  save("tasks", tasks); e.target.reset(); renderTasks();
+});
+$("taskFilter").addEventListener("change", renderTasks);
+
+function renderClasses() {
+  const sorted = [...classes].sort((a,b) =>
+    weekdays.indexOf(a.day) - weekdays.indexOf(b.day) || a.time.localeCompare(b.time)
+  );
+  const classHTML = c => `
+    <div class="schedule-item">
+      <div class="time">${escapeHTML(c.day)} · ${escapeHTML(c.time)}</div>
+      <strong>${escapeHTML(c.name)}</strong>
+      <div class="muted small">${escapeHTML(c.room || "Room not specified")}</div>
+      <button class="icon-btn" onclick="deleteClass('${c.id}')">Remove</button>
+    </div>`;
+  $("allSchedule").innerHTML = sorted.length ? sorted.map(classHTML).join("") :
+    '<div class="empty">Your weekly schedule will appear here.</div>';
+  const todays = sorted.filter(c => c.day === todayName);
+  $("dashSchedule").innerHTML = todays.length ? todays.map(classHTML).join("") :
+    '<div class="empty">No classes scheduled for today.</div>';
+}
+$("classForm").addEventListener("submit", e => {
+  e.preventDefault();
+  classes.push({
+    id:crypto.randomUUID(), name:$("className").value.trim(),
+    day:$("classDay").value, time:$("classTime").value,
+    room:$("classRoom").value.trim()
+  });
+  save("classes", classes); e.target.reset(); renderClasses();
+});
+function deleteClass(id) {
+  classes = classes.filter(c => c.id !== id);
+  save("classes", classes); renderClasses();
+}
+
+function renderNotes() {
+  $("allNotes").innerHTML = notes.length ? [...notes].reverse().map(n => `
+    <article class="note">
+      <strong>${escapeHTML(n.title)}</strong>
+      <p>${escapeHTML(n.body)}</p>
+      <small>${escapeHTML(n.date)}</small>
+      <button class="icon-btn" onclick="deleteNote('${n.id}')">Delete note</button>
+    </article>`).join("") : '<div class="empty">Your notes will appear here.</div>';
+}
+$("noteForm").addEventListener("submit", e => {
+  e.preventDefault();
+  notes.push({
+    id:crypto.randomUUID(), title:$("noteTitle").value.trim(),
+    body:$("noteBody").value.trim(),
+    date:new Date().toLocaleDateString("id-ID")
+  });
+  save("notes", notes); e.target.reset(); renderNotes();
+});
+function deleteNote(id) {
+  notes = notes.filter(n => n.id !== id);
+  save("notes", notes); renderNotes();
+}
+
+let remainingSeconds = 25 * 60;
+let timerInterval = null;
+function updateTimer() {
+  const m = Math.floor(remainingSeconds / 60);
+  const s = remainingSeconds % 60;
+  $("timerDisplay").textContent = `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+}
+function pauseTimer() {
+  clearInterval(timerInterval); timerInterval = null;
+}
+$("startTimer").addEventListener("click", () => {
+  if (timerInterval) return;
+  $("timerStatus").textContent = "Focus mode is on. You got this!";
+  timerInterval = setInterval(() => {
+    remainingSeconds--;
+    updateTimer();
+    if (remainingSeconds <= 0) {
+      pauseTimer();
+      remainingSeconds = 0; updateTimer();
+      $("timerStatus").textContent = "Session complete! Take a little break ✦";
+      alert("Focus session complete! Great job!");
+    }
+  }, 1000);
+});
+$("pauseTimer").addEventListener("click", () => {
+  pauseTimer(); $("timerStatus").textContent = "Timer paused.";
+});
+$("resetTimer").addEventListener("click", () => {
+  pauseTimer(); remainingSeconds = 25 * 60; updateTimer();
+  $("timerStatus").textContent = "Ready when you are.";
+});
+document.querySelectorAll(".mode").forEach(b => b.addEventListener("click", () => {
+  pauseTimer(); remainingSeconds = Number(b.dataset.minutes) * 60;
+  updateTimer(); $("timerStatus").textContent = "New session ready.";
+}));
+
+renderTasks();
+renderClasses();
+renderNotes();
+updateTimer();
+</script>
+</body>
+</html>
